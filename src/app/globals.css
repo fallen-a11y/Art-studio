@@ -1,0 +1,314 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  MV Colours — Wabi-Sabi Luxury palette
+  Named per brief: Linen (bg), Stone (surface), Charcoal (text),
+  Bronze + Sage/Moss (accents), Matte (hairline borders).
+*/
+:root {
+  --linen: #f4ece1;
+  --stone: #e6ddd0;
+  --charcoal: #2b2623;
+  --bronze: #8c6239;
+  --matte: #d3cbbf;
+  --bronze-deep: #6e4c2c;
+  --rust: #9c4a34;
+  --sage: #7c8a6d;
+  --moss: #5f6f4e;
+  --moss-deep: #4a5740;
+  /* Deepest step of the sage→moss ramp (same ~95° hue, L 48→37→30→19%).
+     Dark enough to carry linen text at 7:1 even at 80% opacity over linen. */
+  --cypress: #2e3827;
+
+  /* Raised-value tints of bronze / sage / rust. The base accents all land
+     within ~1.9:1 of cypress, so dark sections use these instead — same
+     hues, lifted until they actually separate from the green. */
+  --brass: #d9a86c;
+  --sage-pale: #b8c4a6;
+  --clay: #d98b6f;
+
+  /* Overridable per-surface so dark sections can swap the bronze ring for
+     one that is actually visible against them. */
+  --focus-ring: var(--bronze);
+
+  --background: var(--linen);
+  --foreground: var(--charcoal);
+  --card: var(--stone);
+  --card-foreground: var(--charcoal);
+  --popover: var(--linen);
+  --popover-foreground: var(--charcoal);
+  --primary: var(--charcoal);
+  --primary-foreground: var(--linen);
+  --secondary: var(--stone);
+  --secondary-foreground: var(--charcoal);
+  --muted: var(--stone);
+  --muted-foreground: #6b6259;
+  --accent: var(--bronze);
+  --accent-foreground: var(--linen);
+  --destructive: var(--rust);
+  --border: var(--matte);
+  --input: var(--matte);
+  --ring: var(--bronze);
+  --radius: 0.125rem;
+  --chart-1: var(--bronze);
+  --chart-2: var(--charcoal);
+  --chart-3: var(--matte);
+  --chart-4: var(--bronze-deep);
+  --chart-5: var(--rust);
+  --sidebar: var(--linen);
+  --sidebar-foreground: var(--charcoal);
+  --sidebar-primary: var(--charcoal);
+  --sidebar-primary-foreground: var(--linen);
+  --sidebar-accent: var(--stone);
+  --sidebar-accent-foreground: var(--charcoal);
+  --sidebar-border: var(--matte);
+  --sidebar-ring: var(--bronze);
+}
+
+@theme inline {
+  --color-linen: var(--linen);
+  --color-stone: var(--stone);
+  --color-charcoal: var(--charcoal);
+  --color-bronze: var(--bronze);
+  --color-bronze-deep: var(--bronze-deep);
+  --color-matte: var(--matte);
+  --color-rust: var(--rust);
+  --color-sage: var(--sage);
+  --color-moss: var(--moss);
+  --color-moss-deep: var(--moss-deep);
+  --color-cypress: var(--cypress);
+  --color-brass: var(--brass);
+  --color-sage-pale: var(--sage-pale);
+  --color-clay: var(--clay);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-zen-kaku);
+  --font-heading: var(--font-fraunces);
+  --font-mono: var(--font-zen-kaku);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* clip (not hidden) keeps position: sticky working while stopping
+       pre-reveal translated elements from creating horizontal scroll */
+    overflow-x: clip;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+  }
+
+  /* Interaction affordance — Tailwind v4 preflight drops the button pointer */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"],
+  a[href],
+  label:has(input),
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* Consistent brand focus ring for every keyboard-reachable element */
+  a[href]:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  [role="radio"]:focus-visible,
+  [tabindex]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+}
+
+@layer utilities {
+  .tracking-editorial {
+    letter-spacing: 0.22em;
+  }
+}
+
+/* ---- Marquee ribbon ---- */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 32s linear infinite;
+  padding-right: 0;
+}
+
+.marquee-mask:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Soft fade at both edges */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ---- Motion ---- */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal[data-variant="up"] {
+  transform: translateY(20px);
+}
+.reveal[data-variant="left"] {
+  transform: translateX(-28px);
+}
+.reveal[data-variant="right"] {
+  transform: translateX(28px);
+}
+.reveal[data-variant="scale"] {
+  transform: scale(0.94);
+}
+.reveal[data-variant="blur"] {
+  transform: translateY(14px);
+  filter: blur(6px);
+}
+
+.reveal[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Hero load choreography — staggered settle on first paint */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise {
+  opacity: 0;
+  animation: hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes frame-settle {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.frame-settle {
+  opacity: 0;
+  animation: frame-settle 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-rise,
+  .frame-settle {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .animate-pulse {
+    animation: none !important;
+  }
+}
